@@ -8,7 +8,7 @@ terraform {
   }
 
   # backend "s3" {
-  #   bucket = "melov3-tf-remote-backend"
+  #   bucket = "tf-remote-backend"
   #   key    = "./terraform.tfstate"
   #   region = "ap-northeast-1"
   # }
