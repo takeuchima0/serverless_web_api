@@ -8,8 +8,8 @@ networks:
 
 services:
   backend:
-    image: dev-ulala-backend:latest
-    container_name: backend
+    image: api
+    container_name: api
     build:
       context: ./
       dockerfile: ./docker/backend/api/Dockerfile
