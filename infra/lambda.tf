@@ -5,9 +5,8 @@ resource "aws_lambda_function" "example_api" {
   image_uri     = "${aws_ecr_repository.example.repository_url}:latest"
   architectures = ["x86_64"]
   role          = aws_iam_role.example_api.arn
-
-  memory_size = 128
-  timeout     = 5
+  memory_size   = 128
+  timeout       = 5
 
   environment {
     variables = {
@@ -20,4 +19,12 @@ resource "aws_lambda_function" "example_api" {
       "Name" = "${local.sig}-lambda-function",
     }
   ))
+}
+
+resource "aws_lambda_permission" "allow_alb" {
+  statement_id  = "AllowExecutionFromALB"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.example_api.function_name
+  principal     = "elasticloadbalancing.amazonaws.com"
+  source_arn    = aws_lb_target_group.example_alb_tg.arn
 }
