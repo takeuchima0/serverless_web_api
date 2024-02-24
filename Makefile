@@ -9,7 +9,7 @@ api:
 
 build:
 	@echo "===============[ Building the docker image ]==============="
-	docker build -f ./docker/backend/api/Dockerfile -t api .
+	docker build --platform linux/amd64 -f ./docker/backend/api/Dockerfile -t api .
 
 run: build
 	@echo "===============[ Running the docker container ]==============="
@@ -26,6 +26,6 @@ auth:
 
 push: build auth
 	@echo "===============[ Building and pushing the docker image to AWS ECR ]==============="
-	docker build -f ./docker/backend/api/Dockerfile -t ${ECR_REPOSITORY} .
+	docker build --platform linux/amd64 -f ./docker/backend/api/Dockerfile -t ${ECR_REPOSITORY} .
 	docker tag ${ECR_REPOSITORY}:latest ${AWS_PROJECT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:latest
 	docker push ${AWS_PROJECT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:latest
