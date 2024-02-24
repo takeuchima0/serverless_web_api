@@ -3,19 +3,22 @@ AWS_REGION       :=
 AWS_PROJECT_ID   :=
 ECR_REPOSITORY   :=
 
-.PHONY: api build up down auth push
+.PHONY: api build run clean auth push
 api:
 	air -c .air.toml
 
 build:
-	docker-compose build
+	@echo "===============[ Building the docker image ]==============="
+	docker build -f ./docker/backend/api/Dockerfile -t api .
 
-up:
-	docker-compose -f docker-compose.yml up -d
-	docker-compose -f docker-compose.yml logs -f
+run: build
+	@echo "===============[ Running the docker container ]==============="
+	docker run -d -p 8080:8080 api
 
-down:
-	docker-compose -f docker-compose.yml down
+clean:
+	@echo "===============[ Stopping and removing the docker container ]==============="
+	docker stop $(shell docker ps -a -q)
+	docker rm $(shell docker ps -a -q)
 
 auth:
 	@echo "===============[ Authenticating with AWS ECR ]==============="
