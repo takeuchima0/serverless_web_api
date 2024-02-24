@@ -33,8 +33,21 @@ resource "aws_internet_gateway" "example_igw" {
   }
 }
 
-resource "aws_route" "internet_access" {
-  route_table_id         = aws_vpc.example_vpc.main_route_table_id
+resource "aws_route_table" "example_custom_rt" {
+  vpc_id = aws_vpc.example_vpc.id
+  tags = {
+    Name = "${local.sig}-rt"
+  }
+}
+
+resource "aws_route" "example_igw_route" {
+  route_table_id         = aws_route_table.example_custom_rt.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.example_igw.id
+}
+
+resource "aws_route_table_association" "subnet_association" {
+  count          = length(aws_subnet.example_subnet[*].id)
+  subnet_id      = aws_subnet.example_subnet[count.index].id
+  route_table_id = aws_route_table.example_custom_rt.id
 }
