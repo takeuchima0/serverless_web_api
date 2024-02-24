@@ -1,5 +1,5 @@
 resource "aws_vpc" "example_vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
 
@@ -13,7 +13,7 @@ data "aws_availability_zones" "available" {
 }
 
 resource "aws_subnet" "example_subnet" {
-  count = 2
+  count             = 2
   vpc_id            = aws_vpc.example_vpc.id
   cidr_block        = count.index == 0 ? "10.0.1.0/24" : "10.0.2.0/24"
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
