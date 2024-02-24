@@ -4,6 +4,7 @@ go 1.21.6
 
 require (
 	github.com/astaxie/beego v1.12.3
+	github.com/aws/aws-lambda-go v1.46.0
 	github.com/caarlos0/env/v7 v7.1.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/unknwon/com v1.0.1

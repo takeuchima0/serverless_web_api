@@ -5,12 +5,13 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/gin-gonic/gin"
 	"github.com/serverless_web_api/config"
 	"github.com/serverless_web_api/handler"
 )
 
-func main() {
+func lambdaHandler() error {
 	gin.SetMode(config.EnvConfig.RunMode)
 
 	routersInit := handler.InitRouter()
@@ -32,4 +33,10 @@ func main() {
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
+
+	return nil
+}
+
+func main() {
+	lambda.Start(lambdaHandler)
 }
