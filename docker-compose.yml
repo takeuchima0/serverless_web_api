@@ -4,7 +4,7 @@ volumes:
   mysql-store:
 
 networks:
-  web-serv-nw:
+  proto_nw:
 
 services:
   backend:
@@ -19,7 +19,7 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - web-serv-nw
+      - proto_nw
 
   mysql:
     # platform: linux/x86_64
@@ -42,7 +42,7 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - web-serv-nw
+      - proto_nw
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 30s
