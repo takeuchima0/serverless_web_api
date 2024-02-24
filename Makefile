@@ -3,7 +3,7 @@ AWS_REGION       :=
 AWS_PROJECT_ID   :=
 ECR_REPOSITORY   :=
 
-.PHONY: api up down push
+.PHONY: api build up down auth push
 api:
 	air -c .air.toml
 
