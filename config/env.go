@@ -21,7 +21,7 @@ type envConfig struct {
 	// Database Configuration
 	DBName     string `env:"DB_NAME" envDefault:"dev"`
 	DBUser     string `env:"DB_USER" envDefault:"dev"`
-	DBPassword string `env:"DB_PASSWORD" envDefault:"password0#"`
+	DBPassword string `env:"DB_PASSWORD" envDefault:"password"`
 	DBHost     string `env:"DB_HOST" envDefault:"localhost:3306"`
 }
 

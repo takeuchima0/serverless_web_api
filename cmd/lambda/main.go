@@ -27,7 +27,7 @@ func main() {
 		MaxHeaderBytes: maxHeaderBytes,
 	}
 
-	log.Default().Printf("Listening and serving HTTP on %s\n", addr)
+	log.Printf("Listening and serving HTTP on %s\n", addr)
 
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

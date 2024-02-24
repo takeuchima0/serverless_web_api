@@ -1,0 +1,51 @@
+version: '3.8'
+
+volumes:
+  mysql-store:
+
+networks:
+  web-serv-nw:
+
+services:
+  backend:
+    image: dev-ulala-backend:latest
+    container_name: backend
+    build:
+      context: ./
+      dockerfile: ./docker/backend/api/Dockerfile
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - web-serv-nw
+
+  mysql:
+    # platform: linux/x86_64
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --default-time-zone='Asia/Tokyo'
+    environment:
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password0#
+      MYSQL_DATABASE: dev
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - mysql-store:/var/lib/mysql
+      - ./docker/logs/mysql:/var/log/mysql
+      - ./docker/etc/mysql/conf.d:/etc/mysql/conf.d
+    ports:
+      - "3306:3306"
+    networks:
+      - web-serv-nw
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
