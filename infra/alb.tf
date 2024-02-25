@@ -25,19 +25,20 @@ resource "aws_lb_listener" "example_alb_listener" {
 
 resource "aws_lb_target_group" "example_alb_tg" {
   name        = "${local.sig}-alb-tg"
-  port        = 80
+  port        = 8080
   protocol    = "HTTP"
   vpc_id      = aws_vpc.example_vpc.id
   target_type = "lambda"
 
   health_check {
     enabled             = true
+    interval            = 30
+    path                = "/api/v1/healthcheck"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = 5
     healthy_threshold   = 2
     unhealthy_threshold = 2
-    timeout             = 5
-    path                = "/health"
-    protocol            = "HTTP"
-    matcher             = "200"
   }
 
   tags = (merge(local.default_tags,

@@ -1,3 +1,5 @@
+# ECR構築時にイメージをpushする構成にしていないため初回実行時は必ずエラーになる
+# ECRに最新イメージをpushしてから再度terraform applyを実行すること
 resource "aws_lambda_function" "example_api" {
   function_name = "${local.sig}-lambda-function"
   description   = "managed by terraform"
@@ -6,7 +8,7 @@ resource "aws_lambda_function" "example_api" {
   architectures = ["x86_64"]
   role          = aws_iam_role.example_api.arn
   memory_size   = 128
-  timeout       = 5
+  timeout       = 30
 
   environment {
     variables = {
