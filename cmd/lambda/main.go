@@ -1,42 +1,62 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"bytes"
+	"context"
 	"net/http"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/gin-gonic/gin"
 	"github.com/serverless_web_api/config"
 	"github.com/serverless_web_api/handler"
 )
 
-func lambdaHandler() error {
+type ResponseWriter struct {
+	Body       bytes.Buffer
+	StatusCode int
+	Headers    http.Header
+}
+
+func (rw *ResponseWriter) Write(data []byte) (int, error) {
+	return rw.Body.Write(data)
+}
+
+func (rw *ResponseWriter) WriteHeader(statusCode int) {
+	rw.StatusCode = statusCode
+}
+
+func (rw *ResponseWriter) Header() http.Header {
+	return rw.Headers
+}
+
+func albHandler(ctx context.Context, req events.ALBTargetGroupRequest) (events.ALBTargetGroupResponse, error) {
 	gin.SetMode(config.EnvConfig.RunMode)
+	g := handler.InitRouter()
 
-	routersInit := handler.InitRouter()
-	readTimeout := config.EnvConfig.ReadTimeout
-	writeTimeout := config.EnvConfig.WriteTimeout
-	maxHeaderBytes := 1 << 20
-	addr := fmt.Sprintf(":%s", config.EnvConfig.Port)
-
-	server := &http.Server{
-		Addr:           addr,
-		Handler:        routersInit,
-		ReadTimeout:    readTimeout,
-		WriteTimeout:   writeTimeout,
-		MaxHeaderBytes: maxHeaderBytes,
+	httpReq, _ := http.NewRequest(req.HTTPMethod, req.Path, bytes.NewBufferString(req.Body))
+	for key, value := range req.Headers {
+		httpReq.Header[key] = []string{value}
 	}
 
-	log.Printf("Listening and serving HTTP on %s\n", addr)
-
-	if err := server.ListenAndServe(); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
+	writer := &ResponseWriter{Body: bytes.Buffer{}, Headers: make(http.Header)}
+	convertedHeaders := make(map[string]string)
+	for key, values := range writer.Headers {
+		if len(values) > 0 {
+			convertedHeaders[key] = values[0]
+		}
 	}
 
-	return nil
+	g.ServeHTTP(writer, httpReq)
+
+	return events.ALBTargetGroupResponse{
+		StatusCode:      writer.StatusCode,
+		Headers:         convertedHeaders,
+		Body:            writer.Body.String(),
+		IsBase64Encoded: false,
+	}, nil
 }
 
 func main() {
-	lambda.Start(lambdaHandler)
+	lambda.Start(albHandler)
 }

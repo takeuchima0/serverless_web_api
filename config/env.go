@@ -1,8 +1,6 @@
 package config
 
 import (
-	"time"
-
 	"github.com/caarlos0/env/v7"
 )
 
@@ -14,9 +12,7 @@ type envConfig struct {
 	Port        string `env:"PORT" envDefault:"8080"`
 
 	// Server Configuration
-	RunMode      string        `env:"GIN_MODE" envDefault:"release"`
-	ReadTimeout  time.Duration `env:"READ_TIMEOUT" envDefault:"60s"`
-	WriteTimeout time.Duration `env:"WRITE_TIMEOUT" envDefault:"60s"`
+	RunMode string `env:"GIN_MODE" envDefault:"release"`
 
 	// Database Configuration
 	DBName     string `env:"DB_NAME" envDefault:"dev"`
