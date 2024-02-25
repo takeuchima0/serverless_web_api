@@ -11,6 +11,7 @@ RUN go build -a -installsuffix cgo -tags lambda.norpc -o main ./cmd/lambda/main.
 
 FROM public.ecr.aws/lambda/provided:al2023
 
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.1 /lambda-adapter /opt/extensions/lambda-adapter
 COPY --from=builder /app/main ./main
 
 ENTRYPOINT ["./main"]
