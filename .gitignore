@@ -74,23 +74,3 @@ override.tf.json
 terraform.rc
 
 # End of https://www.toptal.com/developers/gitignore/api/terraform
-
-### my ignore file ###
-main
-*.zip
-*_private
-*_public
-*.txt
-*_bk
-*.code-workspace
-backup/
-docker/dynamodb/shared-local-instance.db
-terraform/credential/
-v3/bin/bootstrap
-
-
-# ========================================================================
-# others
-# ========================================================================
-*.log
-*.txt
