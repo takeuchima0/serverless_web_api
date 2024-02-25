@@ -9,8 +9,6 @@ COPY . .
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 RUN go build -a -installsuffix cgo -tags lambda.norpc -o main ./cmd/lambda/main.go
 
-
-# 実行ステージ
 FROM public.ecr.aws/lambda/provided:al2023
 
 COPY --from=builder /app/main ./main
